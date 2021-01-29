@@ -72,8 +72,8 @@ acc_s.shape
 
 # acc_n(:,1) = C*acc_s(:,1) # matlab
 
-acc_n = np.multiply(C, acc_s[:, 0])
-
+acc_n[:, 0] = np.matmul(C, acc_s[:, 0])
+acc_n[:, 0]
 acc_n.shape
 
 
