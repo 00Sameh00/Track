@@ -73,8 +73,17 @@ acc_s.shape
 # acc_n(:,1) = C*acc_s(:,1) # matlab
 
 acc_n[:, 0] = np.matmul(C, acc_s[:, 0])
-acc_n[:, 0]
-acc_n.shape
+acc_n[:, 0].shape
 
+
+# % Preallocate storage for velocity (in navigation frame).
+# % Initial velocity assumed to be zero.
+
+vel_n = np.empty((3, data_size))
+vel_n
+
+# vel_n(:,1) = [0 0 0]'; matlab
+vel_n[:, 0] = np.nan_to_num(0)
+vel_n[:, 0]
 
 # %%
