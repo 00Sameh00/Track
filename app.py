@@ -63,27 +63,47 @@ heading
 
 acc_n = np.empty((3, data_size))
 acc_n[:] = np.nan
+acc_n
 acc_n.shape
 
-# Convert specific columns to values
+# Convert the first columns from df to np.values
 acc_s = acc_s.to_numpy()
 acc_s = np.transpose(acc_s)
+acc_s
 acc_s.shape
 
 # acc_n(:,1) = C*acc_s(:,1) # matlab
 
 acc_n[:, 0] = np.matmul(C, acc_s[:, 0])
 acc_n[:, 0].shape
+acc_n[:, 0]
 
 
 # % Preallocate storage for velocity (in navigation frame).
 # % Initial velocity assumed to be zero.
 
 vel_n = np.empty((3, data_size))
+vel_n[:] = np.nan
 vel_n
 
 # vel_n(:,1) = [0 0 0]'; matlab
 vel_n[:, 0] = np.nan_to_num(0)
-vel_n[:, 0]
+vel_n
+
+
+# Preallocate storage for position (in navigation frame).
+# Initial position arbitrarily set to the origin.
+pos_n = np.empty((3, data_size))
+pos_n[:] = np.nan
+pos_n
+
+# % pos_n(: , 1) = [0 0 0]' matlab
+pos_n[:, 0] = np.nan_to_num(0)
+pos_n[:, 0]
+pos_n
+
+
+# Preallocate storage for distance travelled used for altitude plots.
+# distance = nan(1,data_size-1);
 
 # %%
