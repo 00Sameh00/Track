@@ -111,5 +111,9 @@ distance[0, 0] = np.nan_to_num(0)
 distance[0, 0]
 distance
 
+# Error covariance matrix.
+P = np.zeros((9, 9))
+P.shape
+
 
 # %%
