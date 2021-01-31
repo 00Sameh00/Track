@@ -115,5 +115,37 @@ distance
 P = np.zeros((9, 9))
 P.shape
 
+# Process noise parameter, gyroscope and accelerometer noise.
+sigma_omega = 1e-2
+sigma_a = 1e-2
+sigma_omega
+sigma_a
+
+
+# ZUPT measurement matrix.
+H = np.eye(3, 9, k=6)
+H
+
+# ZUPT measurement noise covariance matrix.
+sigma_v = 1e-2
+sigma_v
+
+# R = diag([sigma_v sigma_v sigma_v]).^2, matlab
+R = np.zeros((3, 3))
+np.fill_diagonal(R, sigma_v)
+R = R**2
+R
+
+# Gyroscope stance phase detection threshold.
+gyro_threshold = 0.6
+
+# Main Loop
+# for t = 2:data_size
+
+t =
+for t in data_size():
+    # Start INS (transformation, double integration)
+    dt = timestamp(t) - timestamp(t-1)
+
 
 # %%
