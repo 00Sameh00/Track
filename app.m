@@ -69,23 +69,23 @@ pos_n(:,1) = [0 0 0]';
 % Preallocate storage for distance travelled used for altitude plots.
 distance = nan(1,data_size-1);
 distance(1) = 0;
-% 
-% 
-% % Error covariance matrix.
-% P = zeros(9);
-% 
-% % Process noise parameter, gyroscope and accelerometer noise.
-% sigma_omega = 1e-2; sigma_a = 1e-2;
-% 
-% % ZUPT measurement matrix.
-% H = [zeros(3) zeros(3) eye(3)];
-% 
-% % ZUPT measurement noise covariance matrix.
-%  sigma_v = 1e-2;
-%  R = diag([sigma_v sigma_v sigma_v]).^2;
-% 
-% % Gyroscope stance phase detection threshold.
-% gyro_threshold = 0.6;
+ 
+ 
+% Error covariance matrix.
+P = zeros(9);
+ 
+% Process noise parameter, gyroscope and accelerometer noise.
+sigma_omega = 1e-2; sigma_a = 1e-2;
+ 
+% ZUPT measurement matrix.
+H = [zeros(3) zeros(3) eye(3)];
+ 
+% ZUPT measurement noise covariance matrix.
+sigma_v = 1e-2;
+R = diag([sigma_v sigma_v sigma_v]).^2;
+ 
+% Gyroscope stance phase detection threshold.
+gyro_threshold = 0.6;
 % % 
 % % %% Main Loop
 % data_size = 3;

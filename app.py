@@ -113,32 +113,34 @@ distance[0, 0]
 distance
 
 # Error covariance matrix.
-# P = np.zeros((9, 9))
-# P.shape
+P = np.zeros((9, 9))
+P.shape
+P
 
 # Process noise parameter, gyroscope and accelerometer noise.
-# sigma_omega = 1e-2
-# sigma_a = 1e-2
-# sigma_omega
-# sigma_a
+sigma_omega = 1e-2
+sigma_a = 1e-2
+sigma_omega
+sigma_a
 
 
 # ZUPT measurement matrix.
-# H = np.eye(3, 9, k=6)
-# H
+H = np.eye(3, 9, k=6)
+H
 
 # ZUPT measurement noise covariance matrix.
-# sigma_v = 1e-2
-# sigma_v
+sigma_v = 1e-2
+sigma_v
 
 # R = diag([sigma_v sigma_v sigma_v]).^2, matlab
-# R = np.zeros((3, 3))
-# np.fill_diagonal(R, sigma_v)
-# R = R**2
-# R
+R = np.zeros((3, 3))
+np.fill_diagonal(R, sigma_v)
+R = R**2
+R
 
 # Gyroscope stance phase detection threshold.
-# gyro_threshold = 0.6
+gyro_threshold = 0.6
+gyro_threshold
 
 
 # Main Loop
@@ -158,5 +160,9 @@ distance
 #     gyro_s[t:t+1] = gyro_s[t:t+1].subtract(gyro_bias)
 #     print(gyro_s[t:t+1])
 
+
+# %%
+
+# %%
 
 # %%
