@@ -105,12 +105,12 @@ pos_n
 
 
 # Preallocate storage for distance travelled used for altitude plots.
-# distance = np.empty((1, data_size-1))
-# distance[:] = np.nan
-# distance.shape
-# distance[0, 0] = np.nan_to_num(0)
-# distance[0, 0]
-# distance
+distance = np.empty((1, data_size-1))
+distance[:] = np.nan
+distance.shape
+distance[0, 0] = np.nan_to_num(0)
+distance[0, 0]
+distance
 
 # Error covariance matrix.
 # P = np.zeros((9, 9))
