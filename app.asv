@@ -92,13 +92,11 @@ data_size = 3;
 for t = 2:data_size
     %%% Start INS (transformation, double integration) %%%
     dt = timestamp(t) - timestamp(t-1);
-     
-  
-    % Remove bias from gyro measurements.
-    gyro_s1 = gyro_s(:,t) - gyro_bias;
-    disp(gyro_s1);
-     
-end      
+               
+%      % Remove bias from gyro measurements.
+%      gyro_s1 = gyro_s(:,t) - gyro_bias;
+%      
+% end     
 % %     % Skew-symmetric matrix for angular rates
 % %     ang_rate_matrix = [0   -gyro_s1(3)   gyro_s1(2);
 % %         gyro_s1(3)  0   -gyro_s1(1);

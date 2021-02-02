@@ -145,24 +145,14 @@ gyro_threshold
 
 # Main Loop
 
-# data_size = 5
-# for t in range(1, data_size):
+data_size = 3
+for t in range(1, data_size):
+    # Start INS (transformation, double integration)
+    dt = timestamp[t] - timestamp[t-1]
 
-#     Start INS (transformation, double integration)
-#     dt = timestamp[t] - timestamp[t-1]
+    # Remove bias from gyro measurements.
+    gyro_s1 = gyro_s[t:t+1] - gyro_bias
+    print(gyro_s1)
 
-#     Remove bias from gyro measurements.
-#     gyro_s1 = gyro_s(:,t) - gyro_bias; matlab
-#     gyro_s1 = gyro_s.subtract(gyro_bias), python
-#     print(gyro_s1)
-
-#      gyro_s[:t] = gyro_s[:t] - C[:t]
-#     gyro_s[t:t+1] = gyro_s[t:t+1].subtract(gyro_bias)
-#     print(gyro_s[t:t+1])
-
-
-# %%
-
-# %%
 
 # %%
