@@ -54,18 +54,18 @@ heading;
 % Preallocate storage for accelerations in navigation frame.
 acc_n = nan(3, data_size);
 acc_n(:,1) = C*acc_s(:,1);
-disp(acc_n(:,1)) 
-%  
-%  % Preallocate storage for velocity (in navigation frame).
-%  % Initial velocity assumed to be zero.
-% vel_n = nan(3, data_size);
-% vel_n(:,1) = [0 0 0]';
-% 
-%  % Preallocate storage for position (in navigation frame).
-%  % Initial position arbitrarily set to the origin.
-%  pos_n = nan(3, data_size);
-%  pos_n(:,1) = [0 0 0]';
-%  
+% disp(acc_n(:,1)) 
+ 
+% Preallocate storage for velocity (in navigation frame).
+% Initial velocity assumed to be zero.
+vel_n = nan(3, data_size);
+vel_n(:,1) = [0 0 0]';
+ 
+% Preallocate storage for position (in navigation frame).
+% Initial position arbitrarily set to the origin.
+pos_n = nan(3, data_size);
+pos_n(:,1) = [0 0 0]';
+  
 % % Preallocate storage for distance travelled used for altitude plots.
 % distance = nan(1,data_size-1);
 % distance(1) = 0;
