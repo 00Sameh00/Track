@@ -176,11 +176,9 @@ for t in range(1, data_size):
     pos_n[:, t]
 
     # Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
-    S = np.array([[0, -acc_n[2, t], acc_n[2, t],
-         [acc_n[3, t], 0, -acc_n[1, t],
-         [-acc_n[2, t], acc_n[1, t], 0]])
-
-
+    S = np.array([[0, -acc_n[2, t], acc_n[1, t]],
+                  [acc_n[2, t], 0, -acc_n[0, t]],
+                  [-acc_n[1, t], acc_n[0, t], 0]])
 
 
 # %%
