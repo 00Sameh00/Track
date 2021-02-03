@@ -23,7 +23,7 @@ df.head()
 data_size = len(df)
 data_size
 
-#timestamp = df.loc[:, "time"]
+# timestamp = df.loc[:, "time"]
 timestamp = df["time"]
 timestamp
 
@@ -39,9 +39,9 @@ g = 9.8  # Gravity.
 # Orientation from accelerometers. Sensor is assumed to be stationary.
 
 pitch = -asin(acc_s.iloc[0, 0]/g)
-print(pitch)
+pitch
 roll = atan(acc_s.iloc[0, 1]/acc_s.iloc[0, 2])
-print(roll)
+roll
 yaw = 0
 
 C = np.array([[cos(pitch)*cos(yaw), (sin(roll)*sin(pitch)*cos(yaw))-(cos(roll)*sin(yaw)), (cos(roll)*sin(pitch)*cos(yaw))+(sin(roll)*sin(yaw))],
@@ -151,8 +151,36 @@ for t in range(1, data_size):
     dt = timestamp[t] - timestamp[t-1]
 
     # Remove bias from gyro measurements.
-    gyro_s1 = gyro_s[t:t+1] - gyro_bias
+    gyro_s1 = (gyro_s[t:t+1] - gyro_bias).to_numpy()
     print(gyro_s1)
+
+    # Skew-symmetric matrix for angular rates
+    ang_rate_matrix = np.array([[0, -gyro_s1[0, 2], gyro_s1[0, 1]],
+                                [gyro_s1[0, 2], 0, -gyro_s1[0, 0]],
+                                [-gyro_s1[0, 1], gyro_s1[0, 0], 0]])
+
+    # orientation esimation
+    C = C_prev*(2*np.eye(3)+(ang_rate_matrix*dt)) / \
+        (2*np.eye(3)-(ang_rate_matrix*dt))
+
+    # Transforming the acceleration from sensor frame to navigation frame.
+    acc_n[:, t] = 0.5*(C + C_prev)@acc_s[:, t]
+    acc_n[:, t]
+
+    # Velocity and position estimation using trapeze integration.
+    vel_n[:, t] = vel_n[:, t-1] + \
+        ((acc_n[:, t] - [0, 0, g])+(acc_n[:, t-1] - [0, 0, g]))*dt/2
+    vel_n[:, t]
+
+    pos_n[:, t] = pos_n[:, t-1] + (vel_n[:, t] + vel_n[:, t-1])*dt/2
+    pos_n[:, t]
+
+    # Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
+    S = np.array([[0, -acc_n[2, t], acc_n[2, t],
+         [acc_n[3, t], 0, -acc_n[1, t],
+         [-acc_n[2, t], acc_n[1, t], 0]])
+
+
 
 
 # %%

@@ -92,28 +92,30 @@ data_size = 3;
 for t = 2:data_size
     %%% Start INS (transformation, double integration) %%%
     dt = timestamp(t) - timestamp(t-1);
-     
-  
+       
     % Remove bias from gyro measurements.
     gyro_s1 = gyro_s(:,t) - gyro_bias;
-    disp(gyro_s1);
+           
+       
+    % Skew-symmetric matrix for angular rates
+    ang_rate_matrix = [0   -gyro_s1(3)   gyro_s1(2);
+                       gyro_s1(3)  0   -gyro_s1(1);
+                       -gyro_s1(2)  gyro_s1(1)  0];
+             
+     % orientation esimation
+     C = C_prev*(2*eye(3)+(ang_rate_matrix*dt))/(2*eye(3)-(ang_rate_matrix*dt));
      
-end      
-% %     % Skew-symmetric matrix for angular rates
-% %     ang_rate_matrix = [0   -gyro_s1(3)   gyro_s1(2);
-% %         gyro_s1(3)  0   -gyro_s1(1);
-% %         -gyro_s1(2)  gyro_s1(1)  0];
-% %     
-% %     % orientation estimation
-% %     C = C_prev*(2*eye(3)+(ang_rate_matrix*dt))/(2*eye(3)-(ang_rate_matrix*dt));
-% %     
-% %     % Transforming the acceleration from sensor frame to navigation frame.
-% %     acc_n(:,t) = 0.5*(C + C_prev)*acc_s(:,t);
-% %     
-% %     % Velocity and position estimation using trapeze integration.
-% %     vel_n(:,t) = vel_n(:,t-1) + ((acc_n(:,t) - [0; 0; g] )+(acc_n(:,t-1) - [0; 0; g]))*dt/2;
-% %     pos_n(:,t) = pos_n(:,t-1) + (vel_n(:,t) + vel_n(:,t-1))*dt/2;
-% %     
+    
+    % Transforming the acceleration from sensor frame to navigation frame.
+    acc_n(:,t) = 0.5*(C + C_prev)*acc_s(:,t);
+    
+     
+    % Velocity and position estimation using trapeze integration.
+    vel_n(:,t) = vel_n(:,t-1) + ((acc_n(:,t) - [0; 0; g] )+(acc_n(:,t-1) - [0; 0; g]))*dt/2;
+    pos_n(:,t) = pos_n(:,t-1) + (vel_n(:,t) + vel_n(:,t-1))*dt/2;
+    disp(vel_n(:,t));
+end 
+
 % %     % Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
 % %     S = [0  -acc_n(3,t)  acc_n(2,t);
 % %         acc_n(3,t)  0  -acc_n(1,t);
