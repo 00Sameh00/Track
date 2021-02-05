@@ -88,39 +88,66 @@ R = diag([sigma_v sigma_v sigma_v]).^2;
 gyro_threshold = 0.6;
  
 %% Main Loop
-data_size = 3;
-for t = 2:data_size
+data_size = 10001;
+for t = 10000:data_size
     %%% Start INS (transformation, double integration) %%%
     dt = timestamp(t) - timestamp(t-1);
        
     % Remove bias from gyro measurements.
     gyro_s1 = gyro_s(:,t) - gyro_bias;
-           
+         
        
     % Skew-symmetric matrix for angular rates
     ang_rate_matrix = [0   -gyro_s1(3)   gyro_s1(2);
                        gyro_s1(3)  0   -gyro_s1(1);
                        -gyro_s1(2)  gyro_s1(1)  0];
-             
-     % orientation esimation
-     C = C_prev*(2*eye(3)+(ang_rate_matrix*dt))/(2*eye(3)-(ang_rate_matrix*dt));
-     
-    
-    % Transforming the acceleration from sensor frame to navigation frame.
-    acc_n(:,t) = 0.5*(C + C_prev)*acc_s(:,t);
-    
-     
-    % Velocity and position estimation using trapeze integration.
-    vel_n(:,t) = vel_n(:,t-1) + ((acc_n(:,t) - [0; 0; g] )+(acc_n(:,t-1) - [0; 0; g]))*dt/2;
-    pos_n(:,t) = pos_n(:,t-1) + (vel_n(:,t) + vel_n(:,t-1))*dt/2;
-    disp(vel_n(:,t));
-end 
+                     
+           
+      % orientation esimation
+      %C = C_prev*(((2*eye(3))+(ang_rate_matrix*dt))/((2*eye(3))-(ang_rate_matrix*dt)));
+      a = (2*eye(3));
+      disp('======a=========');
 
-% %     % Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
-% %     S = [0  -acc_n(3,t)  acc_n(2,t);
-% %         acc_n(3,t)  0  -acc_n(1,t);
-% %         -acc_n(2,t) acc_n(1,t) 0];
-% %     
+      disp(a)
+      b = ang_rate_matrix*dt;
+      disp('======b========');
+      disp(b);
+      disp('======d========');
+      d = a - b;
+      disp(d);
+      disp('======s========');
+      s = a + b;
+      disp(s);
+      disp('======y========');
+
+      y = s/d;
+      disp(y);
+      disp('======c========');
+      C = C_prev *(d/s);
+            
+      
+      disp(C);
+      format long
+      disp(dt);
+
+     
+end    
+%     % Transforming the acceleration from sensor frame to navigation frame.
+%     acc_n(:,t) = 0.5*(C + C_prev)*acc_s(:,t);
+%     
+%     
+%     % Velocity and position estimation using trapeze integration.
+%     vel_n(:,t) = vel_n(:,t-1) + ((acc_n(:,t) - [0; 0; g] )+(acc_n(:,t-1) - [0; 0; g]))*dt/2;
+%     pos_n(:,t) = pos_n(:,t-1) + (vel_n(:,t) + vel_n(:,t-1))*dt/2;
+%    
+% 
+% 
+% % %     % Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
+%     S = [0  -acc_n(3,t)  acc_n(2,t);
+%         acc_n(3,t)  0  -acc_n(1,t);
+%         -acc_n(2,t) acc_n(1,t) 0];
+%       
+     
 % %     % State transition matrix.
 % %     F = [eye(3)  zeros(3,3)    zeros(3,3);
 % %         zeros(3,3)   eye(3)  dt*eye(3);
