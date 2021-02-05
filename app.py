@@ -144,11 +144,10 @@ gyro_threshold
 
 # Main Loop
 
-data_size = 10000
-for t in range(9999, data_size):
+data_size = 2
+for t in range(1, data_size):
     # Start INS (transformation, double integration)
     dt = timestamp[t] - timestamp[t-1]
-    print(dt)
 
     # Remove bias from gyro measurements.
     gyro_s1 = (gyro_s[t:t+1] - gyro_bias).to_numpy()
@@ -158,59 +157,34 @@ for t in range(9999, data_size):
                                 [gyro_s1[0, 2], 0, -gyro_s1[0, 0]],
                                 [-gyro_s1[0, 1], gyro_s1[0, 0], 0]])
 
-    # orientation esimation
-    print("-----a--------")
-    a = 2*np.eye(3)
-    print(a)
-    print("------b-------")
-    b = np.matmul(ang_rate_matrix, dt)
-    print(b)
+    # orientation esimation ** chrck point **
+    C = C_prev*(2*np.eye(3)+(ang_rate_matrix*dt)) / \
+        (2*np.eye(3)-(ang_rate_matrix*dt))
 
-    print("------s-------")
-    s = a+b
-    print(s)
-    print("-----d--------")
-    d = a - b
-    print(d)
-    print("------y-------")
-    y = s / d
-    y[1, 0] = 0
-    print(y)
-    print("------c-------")
-    C = C_prev * y
+    # Transforming the acceleration from sensor frame to navigation frame.
+    acc_n[:, t] = 0.5*(C + C_prev)@acc_s[:, t]
+    acc_n[:, t]
 
-    print(C)
+    # Velocity and position estimation using trapeze integration.
+    vel_n[:, t] = vel_n[:, t-1] + \
+        ((acc_n[:, t] - [0, 0, g])+(acc_n[:, t-1] - [0, 0, g]))*dt/2
+    (vel_n[:, t])
 
-    # print(y)
+    pos_n[:, t] = pos_n[:, t-1] + (vel_n[:, t] + vel_n[:, t-1])*dt/2
 
-    #C = C_prev@(2*eye(3)+(ang_rate_matrix*dt))/(2*eye(3)-(ang_rate_matrix*dt));
-#     0.8733   -0.1001    0.4768
-#    -0.0000    0.9786    0.2055
-#    -0.4872   -0.1795    0.8546
+    # Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
+    S = np.array([[0, -acc_n[2, t], acc_n[1, t]],
+                  [acc_n[2, t], 0, -acc_n[0, t]],
+                  [-acc_n[1, t], acc_n[0, t], 0]])
 
-# %%
-    # # Transforming the acceleration from sensor frame to navigation frame.
-    # acc_n[:, t] = 0.5*(C + C_prev)@acc_s[:, t]
-    # acc_n[:, t]
-#
-    # # Velocity and position estimation using trapeze integration.
-    # vel_n[:, t] = vel_n[:, t-1] + \
-    #     ((acc_n[:, t] - [0, 0, g])+(acc_n[:, t-1] - [0, 0, g]))*dt/2
-    # vel_n[:, t]
+    # State transition matrix.
+    F = np.array([[np.eye(3), np.zeros((3, 3)), np.zeros((3, 3))],
+                  [np.zeros((3, 3)), np.eye(3),  dt*np.eye(3)],
+                  [-dt*S, np.zeros((3, 3)), np.eye(3)]])
+    print(F)
 
-    # pos_n[:, t] = pos_n[:, t-1] + (vel_n[:, t] + vel_n[:, t-1])*dt/2
-    # pos_n[:, t]
+    # Compute the process noise covariance Q.
 
-    # # Skew-symmetric cross-product operator matrix formed from the n-frame accelerations.
-    # S = np.array([[0, -acc_n[2, t], acc_n[1, t]],
-    #               [acc_n[2, t], 0, -acc_n[0, t]],
-    #               [-acc_n[1, t], acc_n[0, t], 0]])
-
-    # # State transition matrix.
-    # F = np.array([[np.eye(3), np.zeros(3, 3), np.zeros(3, 3)],
-    #               [np.zeros(3, 3), np.eye(3),  dt*np.eye(3)],
-    #               [-dt*S, np.zeros(3, 3), np.eye(3)]])
-    # print(F)
-
+    Q = np.diag([sigma_omega, sigma_omega, sigma_omega, 0, 0, 0, sigma_a, sigma_a, sigma_a]*dt). ^ 2
 
 # %%
