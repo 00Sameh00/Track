@@ -181,10 +181,23 @@ for t in range(1, data_size):
     F = np.array([[np.eye(3), np.zeros((3, 3)), np.zeros((3, 3))],
                   [np.zeros((3, 3)), np.eye(3),  dt*np.eye(3)],
                   [-dt*S, np.zeros((3, 3)), np.eye(3)]])
-    print(F)
 
     # Compute the process noise covariance Q.
 
-    Q = np.diag([sigma_omega, sigma_omega, sigma_omega, 0, 0, 0, sigma_a, sigma_a, sigma_a]*dt). ^ 2
+    # Q = np.diag([sigma_omega, sigma_omega, sigma_omega, 0,
+    #              0, 0, sigma_a, sigma_a, sigma_a]*dt)**2
+
+    Q = a = np.zeros((9, 9), float)
+    np.fill_diagonal(Q, [sigma_omega, sigma_omega,
+                         sigma_omega, 0, 0, 0, sigma_a, sigma_a, sigma_a])
+    #Q = np.fill_diagonal(Q, [sigma_omega])
+
+    # np.fill_diagonal(Q, sigma_omega)
+
+    # row,col = np.diag_indices(arr.shape[0])
+    # Q[row,col] = np.array([sigma_omega,sigma_omega,sigma_omega,0 ,0, 0, sigma_a, sigma_a, sigma_a])
+
+    print(Q)
+
 
 # %%
