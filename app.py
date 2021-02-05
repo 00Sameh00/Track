@@ -161,6 +161,47 @@ for t in range(1, data_size):
     C = C_prev*(2*np.eye(3)+(ang_rate_matrix*dt)) / \
         (2*np.eye(3)-(ang_rate_matrix*dt))
 
+#     ------C_prev----------
+#    0.873375795078730  -0.100056444275897   0.476658607946463
+#                    0   0.978670780982292   0.205434910498463
+#   -0.487046938775510  -0.179421878293523   0.854747371460731
+
+    # -------(2*eye(3)--------
+    #  2     0     0
+    #  0     2     0
+    #  0     0     2
+
+# -------ang_rate_matrix*dt--------
+#    1.0e-03 *
+
+#                    0  -0.016893018000000   0.164021454000000
+#    0.016893018000000                   0   0.111250566000000
+#   -0.164021454000000  -0.111250566000000                   0
+
+# ------a----------
+# a = (2*eye(3))+(ang_rate_matrix*dt);
+#    2.000000000000000  -0.000016893018000   0.000164021454000
+#    0.000016893018000   2.000000000000000   0.000111250566000
+#   -0.000164021454000  -0.000111250566000   2.000000000000000
+
+# ------b----------
+# b = (2*eye(3))-(ang_rate_matrix*dt);
+#    2.000000000000000   0.000016893018000  -0.000164021454000
+#   -0.000016893018000   2.000000000000000  -0.000111250566000
+#    0.000164021454000   0.000111250566000   2.000000000000000
+
+# ------c----------
+# c = (((2*eye(3))+(ang_rate_matrix*dt))/((2*eye(3))-(ang_rate_matrix*dt)));
+#    0.999999986405794  -0.000016902141573   0.000164020512699
+#    0.000016883894093   0.999999993668969   0.000111251950308
+#   -0.000164022392057  -0.000111249179491   0.999999980360137
+
+# ------d----------
+#  d = C_prev*((2*eye(3))+(ang_rate_matrix*dt));
+#    1.746671717664210  -0.200180671044745   0.953449336924665
+#   -0.000017163029603   1.957318707214514   0.410978698675238
+#   -0.974237105434710  -0.358930620023205   1.709394895988884
+
     # Transforming the acceleration from sensor frame to navigation frame.
     acc_n[:, t] = 0.5*(C + C_prev)@acc_s[:, t]
     acc_n[:, t]
@@ -180,24 +221,19 @@ for t in range(1, data_size):
     # State transition matrix.
     F = np.array([[np.eye(3), np.zeros((3, 3)), np.zeros((3, 3))],
                   [np.zeros((3, 3)), np.eye(3),  dt*np.eye(3)],
-                  [-dt*S, np.zeros((3, 3)), np.eye(3)]])
+                  [-dt*S, np.zeros((3, 3)), np.eye(3)]]).reshape(9, 9)
 
     # Compute the process noise covariance Q.
-
-    # Q = np.diag([sigma_omega, sigma_omega, sigma_omega, 0,
-    #              0, 0, sigma_a, sigma_a, sigma_a]*dt)**2
-
-    Q = a = np.zeros((9, 9), float)
+    Q = np.zeros((9, 9), float)
     np.fill_diagonal(Q, [sigma_omega, sigma_omega,
                          sigma_omega, 0, 0, 0, sigma_a, sigma_a, sigma_a])
-    #Q = np.fill_diagonal(Q, [sigma_omega])
+    Q = (Q*dt)**2
 
-    # np.fill_diagonal(Q, sigma_omega)
-
-    # row,col = np.diag_indices(arr.shape[0])
-    # Q[row,col] = np.array([sigma_omega,sigma_omega,sigma_omega,0 ,0, 0, sigma_a, sigma_a, sigma_a])
-
-    print(Q)
+    ft = np.transpose(F)
+    # Propagate the error covariance matrix.
+    #s = F@P
+    print(F)
+    #P = F@P@ft + Q
 
 
 # %%
